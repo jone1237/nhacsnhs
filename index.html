@@ -1,1 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NHACS NHS Treasury Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root { --nhacs-maroon: #800020; --nhacs-gold: #FFC72C; }
+    .btn-maroon { background-color: var(--nhacs-maroon); color: var(--nhacs-gold); }
+    .border-maroon { border-color: var(--nhacs-maroon); }
+    .text-maroon { color: var(--nhacs-maroon); }
+    body { font-family: sans-serif; }
+  </style>
+</head>
+<body class="bg-gray-100 p-6 md:p-12">
 
+  <!-- MAIN CONTAINER (Matches Sketch Frame) -->
+  <div class="max-w-7xl mx-auto bg-white border-2 border-maroon rounded-3xl shadow-xl overflow-hidden p-8 space-y-8">
+    
+    <!-- HEADER (Sketch Top Area) -->
+    <header class="flex justify-between items-center pb-6 border-b border-gray-200">
+      <h1 class="text-3xl font-black text-maroon tracking-tight">NHACS NHS TREASURY</h1>
+      <div class="text-right">
+        <p class="text-sm text-gray-500">Starting Budget Set At</p>
+        <span id="displayBudgetLabel" class="text-lg font-mono font-bold text-maroon">$0.00</span>
+      </div>
+    </header>
+
+    <!-- SETUP AREA (Dynamic update field) -->
+    <section class="bg-gray-50 p-6 rounded-2xl border border-gray-200 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+      <h2 class="text-lg font-bold">1. Reset Starting Budget</h2>
+      <input type="number" id="newBudgetInput" placeholder="Enter Amount (e.g., 1000)" class="border p-3 rounded-xl focus:ring-2 focus:ring-maroon focus:outline-none col-span-1">
+      <button onclick="setNewBudget()" class="btn-maroon font-bold p-3 rounded-xl hover:opacity-90">
+        Update Starting Budget
+      </button>
+    </section>
+
+    <!-- CONTENT FLEX AREA (Rows vs Blank Area) -->
+    <div class="flex flex-col lg:flex-row gap-8">
+      
+      <!-- LEFT COLUMN: Summaries (The Sketch Rows) -->
+      <aside class="flex-none lg:w-1/3 space-y-6">
+        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+          <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">Total Revenue</p>
+          <p id="totalRevenue" class="text-3xl font-black text-green-600">$0.00</p>
+        </div>
+        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+          <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">Total Expenses</p>
+          <p id="totalExpenses" class="text-3xl font-black text-red-600">$0.00</p>
+        </div>
+        <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+          <p class="text-xs text-gray-500 uppercase tracking-widest font-semibold">Total Change</p>
+          <p id="totalChange" class="text-3xl font-black text-maroon">$0.00</p>
+        </div>
+        <div class="bg-maroon p-6 rounded-2xl shadow-inner text-center">
+          <p class="text-xs text-white/80 uppercase tracking-widest font-semibold">Current Available Balance</p>
+          <p id="currentBalance" class="text-5xl font-extrabold text-[#FFC72C]">$0.00</p>
+        </div>
+      </aside>
+
+      <!-- RIGHT COLUMN: Tools/Chart (The Sketch Blank Area) -->
+      <main class="flex-grow space-y-6">
+        
+        <!-- Add Entry Form -->
+        <div class="bg-white p-6 rounded-2xl border border-maroon grid grid-cols-1 md:grid-cols-4 gap-4">
+          <input id="entryName" type="text" placeholder="Item Name (e.g., Fall Bake Sale)" class="border p-2 rounded col-span-1 md:col-span-2">
+          <input id="entryAmount" type="number" placeholder="Amount ($)" class="border p-2 rounded">
+          <select id="entryType" class="border p-2 rounded">
+            <option value="revenue">Revenue (+)</option>
+            <option value="expense">Expense (-)</option>
+          </select>
+          <button onclick="addEntry()" class="btn-maroon font-bold p-2 rounded col-span-1 md:col-span-4 hover:opacity-90">
+            Log New Financial Entry
+          </button>
+        </div>
+
+        <!-- Doughnut Chart Section -->
+        <div class="bg-gray-50 p-8 rounded-2xl border border-gray-200">
+          <h2 class="text-xl font-bold mb-4 text-center">Fund Distribution (Revenue vs Expenses)</h2>
+          <div class="max-w-md mx-auto">
+            <canvas id="budgetChart"></canvas>
+          </div>
+        </div>
+      </main>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

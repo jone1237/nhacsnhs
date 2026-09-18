@@ -43,9 +43,9 @@ function setNewBudget() {
     return;
   }
 
-  // Update State (We are starting fresh with a new budget number)
+  // Update State
   state.startingBudget = amount;
-  state.totalExpenses = 0; // Reset transactions when resetting the budget
+  state.totalExpenses = 0; 
   state.totalRevenue = 0; 
 
   // UI Cleanup and Refresh
@@ -84,23 +84,19 @@ function addEntry() {
 
 
 // --- Step 3: Global UI Refresh Logic ---
-// This central function forces the entire page to update whenever data changes.
 function updateInterface() {
-  // 1. Calculate final values
   const totalChange = state.totalRevenue - state.totalExpenses;
   const currentAvailable = state.startingBudget + totalChange;
 
-  // 2. Format as Currency ($X.XX)
   const currency = (val) => `$${val.toFixed(2)}`;
 
-  // 3. Update the Left Column (Sketch Rows) and Header
   document.getElementById('displayBudgetLabel').innerText = currency(state.startingBudget);
   document.getElementById('totalRevenue').innerText = currency(state.totalRevenue);
   document.getElementById('totalExpenses').innerText = currency(state.totalExpenses);
   
   const totalChangeEl = document.getElementById('totalChange');
   totalChangeEl.innerText = currency(totalChange);
-  // Color code Total Change (Green if up, red if down)
+  
   totalChangeEl.classList.remove('text-green-600', 'text-red-600', 'text-maroon');
   if (totalChange > 0) totalChangeEl.classList.add('text-green-600');
   else if (totalChange < 0) totalChangeEl.classList.add('text-red-600');
@@ -108,12 +104,13 @@ function updateInterface() {
 
   document.getElementById('currentBalance').innerText = currency(currentAvailable);
 
-  // 4. Update Doughnut Chart (Revenue vs Expenses)
-  // The first slice is what remains of the starting funds (Available + Expenses), minus the actual expenses.
-  // The second slice is the total expenses.
   budgetChart.data.datasets[0].data = [
     (currentAvailable > 0 ? currentAvailable : 0), 
     state.totalExpenses
   ];
   budgetChart.update();
 }
+
+// Make functions globally available for browser/CodePen execution
+window.setNewBudget = setNewBudget;
+window.addEntry = addEntry;
